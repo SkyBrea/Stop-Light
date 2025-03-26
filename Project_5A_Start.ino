@@ -1,4 +1,5 @@
 // By: Skyler 
+// Project #5: Controlling Traffic
 
 #define westButton 3
 #define eastButton 13
