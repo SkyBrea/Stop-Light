@@ -10,17 +10,13 @@
 #define eastYellow 11
 #define eastGreen 10
 
-
 #define yellowBlinkTime 500
 
 boolean trafficWest = true; // west = true, east = false
 int flowTime = 10000;
 int changeDelay = 2000;
 
-
-
-void setup()
-{
+void setup() {
   pinMode(westButton, INPUT);
   pinMode(eastButton, INPUT);
   pinMode(westRed, OUTPUT);
@@ -38,59 +34,60 @@ void setup()
   digitalWrite(eastGreen, LOW);
 }
 
-void loop()
-{
-  if ( digitalRead(westButton) == HIGH)
-  {
-    if ( trafficWest != true)
-    {
-      trafficWest = true;
-      delay(flowTime);
-      digitalWrite(eastGreen, LOW);
-
-      digitalWrite(eastYellow, HIGH);
-      delay(changeDelay);
-      digitalWrite(eastYellow, LOW);
-      digitalWrite(eastRed, HIGH);
-      delay(changeDelay);
-      for ( int a = 0; a < 5; a++)
-      {
-        digitalWrite(westYellow, LOW);
-        delay(yellowBlinkTime);
-        digitalWrite(westYellow, HIGH);
-        delay(yellowBlinkTime);
-      }
-      digitalWrite(westYellow, LOW);
-      digitalWrite(westRed, LOW);
-      digitalWrite(westGreen, HIGH);
-
-    }
+void loop() {
+  if (digitalRead(westButton) == HIGH && trafficWest == false) {
+    switchToWest();
   }
-  if ( digitalRead(eastButton) == HIGH)
-  {
-    if ( trafficWest == true)
-    {
-      trafficWest = false;
-      delay(flowTime);
-      digitalWrite(westGreen, LOW);
-      digitalWrite(westYellow, HIGH);
-      delay(changeDelay);
-      digitalWrite(westYellow, LOW);
-      digitalWrite(westRed, HIGH);
-      delay(changeDelay);
-      for ( int a = 0; a < 5; a++)
-      {
-        digitalWrite(eastYellow, LOW);
-        delay(yellowBlinkTime);
-        digitalWrite(eastYellow, HIGH);
-        delay(yellowBlinkTime);
-      }
-      digitalWrite(eastYellow, LOW);
-      digitalWrite(eastRed, LOW);
-      digitalWrite(eastGreen, HIGH);
-
-    }
-
+  
+  if (digitalRead(eastButton) == HIGH && trafficWest == true) {
+    switchToEast();
   }
+}
 
+// Function to switch traffic flow to WEST
+void switchToWest() {
+  trafficWest = true;
+  delay(flowTime);
+  
+  digitalWrite(eastGreen, LOW);
+  digitalWrite(eastYellow, HIGH);
+  delay(changeDelay);
+  digitalWrite(eastYellow, LOW);
+  digitalWrite(eastRed, HIGH);
+  delay(changeDelay);
+  
+  blinkYellow(westYellow);
+  
+  digitalWrite(westYellow, LOW);
+  digitalWrite(westRed, LOW);
+  digitalWrite(westGreen, HIGH);
+}
+
+// Function to switch traffic flow to EAST
+void switchToEast() {
+  trafficWest = false;
+  delay(flowTime);
+  
+  digitalWrite(westGreen, LOW);
+  digitalWrite(westYellow, HIGH);
+  delay(changeDelay);
+  digitalWrite(westYellow, LOW);
+  digitalWrite(westRed, HIGH);
+  delay(changeDelay);
+  
+  blinkYellow(eastYellow);
+  
+  digitalWrite(eastYellow, LOW);
+  digitalWrite(eastRed, LOW);
+  digitalWrite(eastGreen, HIGH);
+}
+
+// Function to blink yellow light 5 times
+void blinkYellow(int pin) {
+  for (int i = 0; i < 5; i++) {
+    digitalWrite(pin, LOW);
+    delay(yellowBlinkTime);
+    digitalWrite(pin, HIGH);
+    delay(yellowBlinkTime);
+  }
 }
